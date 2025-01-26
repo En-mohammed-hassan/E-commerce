@@ -6,7 +6,7 @@ export default async function ProductCreateRoute({
 }: {
 	params: { id: string };
 }) {
-	const product = await getProduct(params.id) ;
+	const product = await getProduct(params.id);
 
 	return <EditForm product={product}></EditForm>;
 }

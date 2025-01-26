@@ -3,7 +3,7 @@ import ProductCard from "@/components/Store/ProductCard";
 import ProductDetails from "@/components/Store/ProductDetails";
 import React from "react";
 
-const page = async ({ params }: { params: { id: string } }) => {
+const page = async function ({ params }: { params: { id: string } }) {
 	const products = await getFeaturedProducts();
 	return (
 		<div>

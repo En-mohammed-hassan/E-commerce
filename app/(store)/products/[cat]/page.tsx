@@ -1,8 +1,9 @@
 import getProductBycat from "@/app/lib/getProductByCat";
 import ProductCard from "@/components/Store/ProductCard";
+type paramsType = Promise<{ cat: string }>;
 
-const page = async ({ params }: { params: { cat: string } }) => {
-	const { cat } = params;
+const page = async ({ params }: { params: paramsType }) => {
+	const { cat } = await params;
 
 	const products = await getProductBycat(cat);
 	return (

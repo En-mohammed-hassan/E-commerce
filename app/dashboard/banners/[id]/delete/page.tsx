@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import React from "react";
+type paramsType = Promise<{ id: string }>;
 
-const DeletePage = ({ params }: { params: { id: string } }) => {
+const DeletePage = async ({ params }: { params: paramsType }) => {
+	const { id } = await params;
 	return (
 		<div className="w-full h-[80vh] flex justify-center items-center">
 			<Card className="max-w-xl">
@@ -30,7 +32,7 @@ const DeletePage = ({ params }: { params: { id: string } }) => {
 					</Button>
 
 					<form action={deleteBanner}>
-						<input type="hidden" value={params.id} name="bannerId" />
+						<input type="hidden" value={id} name="bannerId" />
 						<DeletingButton text="Delete"></DeletingButton>
 					</form>
 				</CardFooter>

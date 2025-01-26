@@ -2,9 +2,13 @@ import getFeaturedProducts from "@/app/lib/getFeaturedProducts";
 import ProductCard from "@/components/Store/ProductCard";
 import ProductDetails from "@/components/Store/ProductDetails";
 import React from "react";
-
-const page = async function ({ params }: { params: { id: string } }) {
-	const id = await params.id;
+interface PageProps {
+	params: {
+		id: string;
+	};
+}
+export default async function Page({ params }: PageProps) {
+	const { id } = params;
 	const products = await getFeaturedProducts();
 	return (
 		<div>
@@ -21,6 +25,4 @@ const page = async function ({ params }: { params: { id: string } }) {
 			</div>
 		</div>
 	);
-};
-
-export default page;
+}

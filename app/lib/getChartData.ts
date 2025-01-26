@@ -1,8 +1,13 @@
 import { prisma } from "./db";
 
+type ChartDataResult = {
+	date: Date; // Adjust to `string` if `date` is returned as a string
+	totalamount: number;
+}[];
+
 export async function getChartData() {
 	// Create a map to store totals for each day
-	const results = await prisma.$queryRaw`
+	const results: ChartDataResult = await prisma.$queryRaw`
     SELECT
       DATE_TRUNC('day', "createdAt") AS date,
       SUM("amount") AS totalamount
@@ -18,9 +23,6 @@ export async function getChartData() {
 	});
 
 	const amounts = results.map((result) => Number(result.totalamount) / 100);
-	console.log(results);
-	console.log(amounts);
-	console.log(dates);
 
 	return { dates, amounts };
 }

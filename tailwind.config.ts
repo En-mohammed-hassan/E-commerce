@@ -59,5 +59,5 @@ export default withUt({
 			},
 		},
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [],
 }) satisfies Config;

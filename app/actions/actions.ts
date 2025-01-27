@@ -207,8 +207,9 @@ export async function checkOut() {
 		const session = await stripe.checkout.sessions.create({
 			line_items: lineItems,
 			mode: "payment",
-			cancel_url: "http://localhost:3000/payment/cancel",
-			success_url: "http://localhost:3000/payment/success",
+			cancel_url: "https://e-commerce-alpha-amber-21.vercel.app/payment/cancel",
+			success_url:
+				"https://e-commerce-alpha-amber-21.vercel.app/payment/success",
 			metadata: {
 				userId: user.id,
 			},

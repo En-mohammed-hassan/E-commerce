@@ -27,5 +27,5 @@ export async function GET() {
 		});
 	}
 
-	return NextResponse.redirect("http://localhost:3000/dashboard");
+	return NextResponse.redirect("https://e-commerce-alpha-amber-21.vercel.app/dashboard");
 }

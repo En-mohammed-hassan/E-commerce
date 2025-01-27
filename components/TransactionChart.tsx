@@ -1,92 +1,55 @@
 "use client";
 import React from "react";
 import {
-	Chart as ChartJS,
-	CategoryScale,
-	LinearScale,
-	PointElement,
-	LineElement,
-	Title,
-	Tooltip,
-	Legend,
-	TimeScale,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-import "chartjs-adapter-date-fns"; // Adapter for handling date formatting
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
-// Register required components for Chart.js
-ChartJS.register(
-	CategoryScale,
-	LinearScale,
-	PointElement,
-	LineElement,
-	Title,
-	Tooltip,
-	Legend,
-	TimeScale
-);
+type ChartData = {
+  date: string;
+  sales: number;
+};
 
-export default function LineChart({
-	dates,
-	amounts,
+export default function ResponsiveLineChart({
+  data,
 }: {
-	dates: string[];
-	amounts: number[];
+  data: ChartData[];
 }) {
-	// Sample data with dates and amounts
-	const data = {
-		labels: dates, // X-axis dates
-		datasets: [
-			{
-				label: "sales",
-				data: amounts, // Y-axis amounts
-				borderColor: "rgba(75, 192, 192, 1)",
-				backgroundColor: "rgba(75, 192, 192, 0.2)",
-				borderWidth: 2,
-				tension: 0.4, // Makes the line slightly curved
-				pointRadius: 5, // Points on the line
-			},
-		],
-	};
-
-	// Chart options
-	const options = {
-		responsive: true, // Ensures responsiveness
-		plugins: {
-			legend: {
-				position: "top", // Position of the legend
-			},
-			tooltip: {
-				enabled: true, // Enables tooltips
-				callbacks: {
-					label: (context) => `sales: $${context.raw}`, // Customizes tooltip text
-				},
-			},
-		},
-		scales: {
-			x: {
-				type: "time", // Specifies that the x-axis is time-based
-				time: {
-					unit: "day", // Adjusts how dates are displayed (e.g., month, week, day)
-				},
-				title: {
-					display: true,
-					text: "Date", // X-axis title
-				},
-			},
-			y: {
-				title: {
-					display: true,
-					text: "sales ($)", // Y-axis title
-				},
-				beginAtZero: true, // Starts y-axis at 0
-			},
-		},
-	};
-
-	return (
-		<div style={{ width: "100%", height: "400px" }}>
-			<Line data={data} options={options} />
-		</div>
-	);
+  return (
+    <div style={{ width: "100%", height: "400px" }}>
+      <ResponsiveContainer>
+        <LineChart
+          data={data}
+          margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="date"
+            label={{ value: "Date", position: "insideBottom", offset: -5 }}
+          />
+          <YAxis
+            label={{
+              value: "Sales ($)",
+              angle: -90,
+              position: "insideLeft",
+            }}
+          />
+          <Tooltip formatter={(value) => `$${value}`} />
+          <Legend verticalAlign="top" />
+          <Line
+            type="monotone"
+            dataKey="sales"
+            stroke="#8884d8"
+            activeDot={{ r: 8 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
 }

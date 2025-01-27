@@ -1,12 +1,17 @@
 import { prisma } from "./db";
 
 type ChartDataResult = {
-	date: Date; // Adjust to `string` if `date` is returned as a string
-	totalamount: number;
+	date: Date; // Assuming the raw query returns Date objects
+	totalamount: bigint; // Prisma might return amounts as bigint
 }[];
 
-export async function getChartData() {
-	// Create a map to store totals for each day
+type ChartData = {
+	date: string; // Formatted date as a string (e.g., "YYYY-MM-DD")
+	sales: number; // Total amount as a number
+}[];
+
+export async function getChartData(): Promise<ChartData> {
+	// Execute raw SQL query
 	const results: ChartDataResult = await prisma.$queryRaw`
     SELECT
       DATE_TRUNC('day', "createdAt") AS date,
@@ -16,13 +21,12 @@ export async function getChartData() {
     ORDER BY DATE_TRUNC('day', "createdAt") ASC;
   `;
 
-	const dates = results.map((result) => {
-		// Assuming result.date is already a Date object from Prisma
-		const date = new Date(result.date);
-		return date.toISOString().split("T")[0]; // Formats as "YYYY-MM-DD"
+	// Map raw query results to the desired format
+	const chartData: ChartData = results.map((result) => {
+		const date = new Date(result.date).toISOString().split("T")[0]; // Format date as "YYYY-MM-DD"
+		const sales = Number(result.totalamount) / 100; // Convert bigint to number and divide by 100
+		return { date, sales };
 	});
 
-	const amounts = results.map((result) => Number(result.totalamount) / 100);
-
-	return { dates, amounts };
+	return chartData;
 }

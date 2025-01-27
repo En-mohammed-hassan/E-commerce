@@ -13,17 +13,14 @@ import Image from "next/image";
 
 const DashboardHero = async () => {
 	const orders = await getOrders();
-	const { amounts, dates } = await getChartData();
+	const  chartData  = await getChartData();
 	return (
 		<div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-8 mt-10">
 			<Card className="xl:col-span-2">
 				<CardHeader className=" ">
 					<CardTitle className="text-2xl">Transactions</CardTitle>
 					<CardDescription>
-						<TransactionChart
-							amounts={amounts}
-							dates={dates}
-						></TransactionChart>
+						<TransactionChart data={chartData}></TransactionChart>
 					</CardDescription>
 				</CardHeader>
 				<CardContent></CardContent>

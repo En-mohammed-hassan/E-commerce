@@ -11,6 +11,7 @@ import authinticate from "../lib/authinticate";
 import { stripe } from "../lib/stripe";
 import type Stripe from "stripe";
 import authorizeAdmin from "../lib/authorizeAdmin";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 
 export async function createProduct(prevState: unknown, formData: FormData) {
 	await authorizeAdmin();
@@ -120,8 +121,9 @@ export async function deleteBanner(formData: FormData) {
 }
 
 export async function addItem(formData: FormData) {
-	const user = await authinticate();
-
+	const { getUser } = getKindeServerSession();
+	const user = await getUser();
+	if (!user) redirect("/app/api/auth/login");
 	const productId = formData.get("productId") as string;
 	const selectedProduct = await prisma.product.findUnique({
 		where: {

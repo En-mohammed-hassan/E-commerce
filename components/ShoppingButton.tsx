@@ -10,12 +10,12 @@ const ShoppingButton = () => {
 	return (
 		<>
 			{pending ? (
-				<Button disabled>
-					<Loader2 className="animate-spin w-5 h-5"></Loader2>
+				<Button disabled className="w-full">
+					<Loader2 className="animate-spin w-5 h-5 "></Loader2>
 					loading
 				</Button>
 			) : (
-				<Button type="submit">
+				<Button type="submit" className="w-full">
 					<ShoppingBagIcon></ShoppingBagIcon>
 					Add to Cart
 				</Button>

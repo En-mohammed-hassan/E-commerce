@@ -94,7 +94,7 @@ export default async function StoreLayout({
 												<button>
 													<Image
 														src={
-															user?.picture ??
+															user?.picture ||
 															"https://avatar.vercel.sh/rauchg.svg?text=User"
 														}
 														alt="profile"

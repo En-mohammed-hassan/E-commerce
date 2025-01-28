@@ -12,6 +12,8 @@ import Image from "next/image";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import ShoppingButton from "../ShoppingButton";
+import { addItem } from "@/app/actions/actions";
 type item = {
 	id: string;
 	name: string;
@@ -56,9 +58,23 @@ const ProductCard = ({ item }: { item: item }) => {
 					{item.description}
 				</p>
 			</Card>
-			<Button className="w-full rounded-lg my-5 " size="lg" asChild>
-				<Link href={`/product/${item.id}`}>See Details</Link>
-			</Button>
+			<div className="w-full grid grid-cols-2 my-5 gap-3">
+				<div>
+					<form action={addItem}>
+						<input
+							type="text"
+							hidden
+							value={item.id}
+							name="productId"
+							readOnly
+						/>
+						<ShoppingButton></ShoppingButton>
+					</form>
+				</div>
+				<Button className=" rounded-lg" asChild>
+					<Link href={`/product/${item.id}`}>See Details</Link>
+				</Button>
+			</div>
 		</div>
 	);
 };

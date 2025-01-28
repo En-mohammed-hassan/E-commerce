@@ -123,7 +123,7 @@ export async function deleteBanner(formData: FormData) {
 export async function addItem(formData: FormData) {
 	const { getUser } = getKindeServerSession();
 	const user = await getUser();
-	if (!user) redirect("/app/api/auth/login");
+	if (!user) redirect("/api/auth/login");
 	const productId = formData.get("productId") as string;
 	const selectedProduct = await prisma.product.findUnique({
 		where: {

@@ -1,7 +1,8 @@
+"use client";
+
 import redis from "@/app/lib/redis";
 import type { Cart } from "@/app/lib/types";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { ShoppingBag, ShoppingBagIcon } from "lucide-react";
+import { Loader2, ShoppingBag, ShoppingBagIcon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -14,28 +15,33 @@ import {
 } from "../ui/sheet";
 import Image from "next/image";
 import DeletingButton from "../DeletingButton";
-import { checkOut, deletItem } from "@/app/actions/actions";
+import { checkOut } from "@/app/actions/actions";
 import SubmitButton from "../SubmitButton";
 import { Card } from "../ui/card";
+import useCartStore from "@/stores/useCartStore";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import { useState } from "react";
 
-const Cart = async () => {
-	const { getUser } = getKindeServerSession();
-	const user = await getUser();
+const Cart = () => {
+	const { user } = useKindeAuth();
+	const { cart, removeItem } = useCartStore();
 	let total = 0;
 	let totalPrice = 0;
-	let cart: Cart | null = null;
+	const [pending, setPending] = useState(false);
+	const deleteItem = (productId: string) => {
+		setPending(true);
+		removeItem(productId);
+		setPending(false);
+	};
 	if (user) {
-		const redisCart: Cart | null = await redis.get(`cart_${user.id}`);
-
 		total =
-			redisCart?.items.reduce((acc, current) => {
+			cart?.items.reduce((acc, current) => {
 				return acc + current.quantity;
 			}, 0) || 0;
 		totalPrice =
-			redisCart?.items.reduce((acc, current) => {
+			cart?.items.reduce((acc, current) => {
 				return acc + current.quantity * current.price;
 			}, 0) || 0;
-		cart = redisCart;
 	}
 	return (
 		<>
@@ -86,22 +92,35 @@ const Cart = async () => {
 										></Image>
 										<div className="flex flex-col justify-between items-end">
 											<p className="font-semibold text-lg ">{`${item.quantity} X ${item.price}$`}</p>
-											<form action={deletItem}>
-												<input
-													type="text"
-													readOnly
-													hidden
-													name="productId"
-													value={item.productId}
-												/>
-												<DeletingButton text="delete"></DeletingButton>
-											</form>
+
+											<div>
+												{pending ? (
+													<Button disabled variant="destructive">
+														<Loader2 className="animate-spin w-5 h-5"></Loader2>
+														Loading
+													</Button>
+												) : (
+													<Button
+														type="submit"
+														onClick={() => {
+															deleteItem(item.productId);
+														}}
+														variant="destructive"
+													>
+														Delete
+													</Button>
+												)}
+											</div>
 										</div>
 									</div>
 								))}
 								<div className="mt-10 justify-between flex ">
 									<p className="text-xl font-bold">Total : {totalPrice}</p>
-									<form action={checkOut}>
+									<form
+										action={() => {
+											checkOut(cart);
+										}}
+									>
 										<SubmitButton text="Check Out"></SubmitButton>
 									</form>
 								</div>

@@ -3,6 +3,8 @@ import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+	const dashboardPath = process.env.KINDE_SITE_URL + "/dashboard";
+	console.log(dashboardPath);
 	const { getUser } = getKindeServerSession();
 	const user = await getUser();
 	if (!user || !user.id || user === null) {
@@ -27,5 +29,5 @@ export async function GET() {
 		});
 	}
 
-	return NextResponse.redirect("https://e-commerce-alpha-amber-21.vercel.app/dashboard");
+	return NextResponse.redirect(dashboardPath);
 }

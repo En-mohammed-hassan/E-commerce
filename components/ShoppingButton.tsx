@@ -1,12 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { Button } from "./ui/button";
 import { Loader2, ShoppingBagIcon } from "lucide-react";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
+import useCartStore from "@/stores/useCartStore";
+import type { Item } from "@/app/lib/types";
 
-const ShoppingButton = () => {
-	const { pending } = useFormStatus();
+const ShoppingButton = ({ cartItem }: { cartItem: Item }) => {
+	const { user } = useKindeAuth();
+	const { addItem } = useCartStore();
+	const [pending, setPending] = useState(false);
+	const handleSubmit = () => {
+		setPending(true);
+		addItem(cartItem);
+		setPending(false);
+	};
+
 	return (
 		<>
 			{pending ? (
@@ -15,7 +26,7 @@ const ShoppingButton = () => {
 					loading
 				</Button>
 			) : (
-				<Button type="submit" className="w-full">
+				<Button onClick={handleSubmit} className="w-full">
 					<ShoppingBagIcon></ShoppingBagIcon>
 					Add to Cart
 				</Button>

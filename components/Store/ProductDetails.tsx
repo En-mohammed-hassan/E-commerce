@@ -8,6 +8,13 @@ import ShoppingButton from "../ShoppingButton";
 
 const ProductDetails = async ({ id }: { id: string }) => {
 	const product = await getProduct(id);
+	const cartItem = {
+		name: product.name,
+		productId: product.id,
+		image: product.images[0],
+		price: product.price,
+		quantity: 1,
+	};
 	return (
 		<div className="grid sm:grid-cols-2 gap-4">
 			<ImageSlider product={product}></ImageSlider>
@@ -19,7 +26,7 @@ const ProductDetails = async ({ id }: { id: string }) => {
 				<div className="flex justify-between mt-4">
 					<form action={addItem}>
 						<input type="text" hidden value={id} name="productId" readOnly />
-						<ShoppingButton></ShoppingButton>
+						<ShoppingButton cartItem={cartItem}></ShoppingButton>
 					</form>
 					<Button className="" asChild>
 						<Link href="/products/all">Go to Products </Link>

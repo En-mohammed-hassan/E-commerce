@@ -49,7 +49,7 @@ export default async function OrdersPage() {
 									{new Intl.DateTimeFormat("en-US").format(order.createdAt)}
 								</TableCell>
 								<TableCell className="text-right">
-									$ ${new Intl.NumberFormat("en-us").format(order.amount / 100)}
+									${new Intl.NumberFormat("en-us").format(order.amount / 100)}
 								</TableCell>
 							</TableRow>
 						))}

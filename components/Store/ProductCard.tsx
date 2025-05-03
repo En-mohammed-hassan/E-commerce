@@ -27,6 +27,13 @@ type item = {
 };
 
 const ProductCard = ({ item }: { item: item }) => {
+	const cartItem = {
+		name: item.name,
+		productId: item.id,
+		image: item.images[0],
+		price: item.price,
+		quantity: 1,
+	};
 	return (
 		<div className="mt-5">
 			<Card className=" overflow-hidden">
@@ -60,16 +67,7 @@ const ProductCard = ({ item }: { item: item }) => {
 			</Card>
 			<div className="w-full grid grid-cols-2 my-5 gap-3">
 				<div>
-					<form action={addItem}>
-						<input
-							type="text"
-							hidden
-							value={item.id}
-							name="productId"
-							readOnly
-						/>
-						<ShoppingButton></ShoppingButton>
-					</form>
+					<ShoppingButton cartItem={cartItem}></ShoppingButton>
 				</div>
 				<Button className=" rounded-lg" asChild>
 					<Link href={`/product/${item.id}`}>See Details</Link>

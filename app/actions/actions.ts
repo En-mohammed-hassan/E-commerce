@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { bannerSchema, productSchema } from "../lib/zodSchemas";
 import { prisma } from "../lib/db";
 import { extractUrls } from "../lib/extractUrls";
-import redis from "../lib/redis";
 import { revalidatePath } from "next/cache";
 import type { Cart } from "../lib/types";
 import authinticate from "../lib/authinticate";
@@ -120,103 +119,36 @@ export async function deleteBanner(formData: FormData) {
 	redirect("/dashboard/banners");
 }
 
-export async function addItem(formData: FormData) {
-	const { getUser } = getKindeServerSession();
-	const user = await getUser();
-	if (!user) redirect("/api/auth/login");
-	const productId = formData.get("productId") as string;
-	const selectedProduct = await prisma.product.findUnique({
-		where: {
-			id: productId,
-		},
-	});
-	if (!selectedProduct) redirect("/");
-	const cart: Cart | null = await redis.get(`cart_${user.id}`);
-
-	let MyCart = {};
-	if (!cart) {
-		MyCart = {
-			items: [
-				{
-					name: selectedProduct.name,
-					productId: selectedProduct.id,
-					image: selectedProduct.images[0],
-
-					price: selectedProduct.price,
-					quantity: 1,
-				},
-			],
-			user_id: user.id,
-		};
-	} else {
-		let isFound = false;
-		cart?.items.forEach((e) => {
-			if (e.productId === productId) {
-				isFound = true;
-				e.quantity += 1;
-			}
-		});
-		if (!isFound) {
-			cart.items.push({
-				name: selectedProduct.name,
-				productId: selectedProduct.id,
-				image: selectedProduct.images[0],
-
-				price: selectedProduct.price,
-				quantity: 1,
-			});
-		}
-		MyCart = cart;
-	}
-	await redis.set(`cart_${user.id}`, MyCart);
-	revalidatePath("/", "layout");
-	revalidatePath("/", "page");
-}
-
-export async function deletItem(formData: FormData) {
-	const user = await authinticate();
-
-	const productId = formData.get("productId");
-	const cart: Cart | null = await redis.get(`cart_${user.id}`);
-
-	if (!cart) redirect("/");
-	const updatedItems = cart?.items.filter((e) => e.productId !== productId);
-	const updatedCart = {
-		items: updatedItems,
-		user_id: user.id,
-	};
-	await redis.del(`cart_${user.id}`);
-	await redis.set(`cart_${user.id}`, updatedCart);
-	revalidatePath("/", "layout");
-}
-
-export async function checkOut() {
-	const user = await authinticate();
-	const cart: Cart | null = await redis.get(`cart_${user?.id}`);
-	if (cart && cart.items) {
-		const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
-			cart.items.map((item) => ({
-				price_data: {
-					unit_amount: item.price * 100,
-					currency: "usd",
-					product_data: {
-						name: item.name,
-						images: [item.image],
+export async function checkOut(cart: Cart) {
+	try {
+		const user = await authinticate();
+		if (cart && cart.items) {
+			const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] =
+				cart.items.map((item) => ({
+					price_data: {
+						unit_amount: item.price * 100,
+						currency: "usd",
+						product_data: {
+							name: item.name,
+							images: [item.image],
+						},
 					},
+					quantity: item.quantity,
+				}));
+			const session = await stripe.checkout.sessions.create({
+				line_items: lineItems,
+				mode: "payment",
+				cancel_url: process.env.KINDE_SITE_URL + "/cancel",
+				success_url: process.env.KINDE_SITE_URL + "/success",
+				metadata: {
+					userId: user.id,
 				},
-				quantity: item.quantity,
-			}));
-		const session = await stripe.checkout.sessions.create({
-			line_items: lineItems,
-			mode: "payment",
-			cancel_url: "https://e-commerce-alpha-amber-21.vercel.app/payment/cancel",
-			success_url:
-				"https://e-commerce-alpha-amber-21.vercel.app/payment/success",
-			metadata: {
-				userId: user.id,
-			},
-		});
+			});
 
-		return redirect(session.url as string);
+			return redirect(session.url as string);
+		}
+	} catch (error: unknown) {
+		console.log(error);
+		return redirect("/");
 	}
 }

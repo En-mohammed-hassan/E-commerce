@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
 	const dashboardPath = process.env.KINDE_SITE_URL + "/dashboard";
-	console.log(dashboardPath);
 	const { getUser } = getKindeServerSession();
 	const user = await getUser();
 	if (!user || !user.id || user === null) {

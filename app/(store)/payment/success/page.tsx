@@ -1,10 +1,18 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import { useEffect } from "react";
+import useCartStore from "@/stores/useCartStore";
 
 const Success = () => {
+	const { clearCart } = useCartStore();
+
+	useEffect(() => {
+		clearCart();
+	}, [clearCart]);
 	return (
 		<section className="h-[80vh] w-full flex justify-center items-center">
 			<Card className="w-80">

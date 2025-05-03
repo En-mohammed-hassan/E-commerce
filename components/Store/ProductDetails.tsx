@@ -3,7 +3,6 @@ import React from "react";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import ImageSlider from "./ImageSlider";
-import { addItem } from "@/app/actions/actions";
 import ShoppingButton from "../ShoppingButton";
 
 const ProductDetails = async ({ id }: { id: string }) => {
@@ -24,10 +23,7 @@ const ProductDetails = async ({ id }: { id: string }) => {
 				<span className="block text-gray-500 ">description :</span>
 				<p className="text-gray-500 leading-7">{product.description}</p>
 				<div className="flex justify-between mt-4">
-					<form action={addItem}>
-						<input type="text" hidden value={id} name="productId" readOnly />
-						<ShoppingButton cartItem={cartItem}></ShoppingButton>
-					</form>
+					<ShoppingButton cartItem={cartItem}></ShoppingButton>
 					<Button className="" asChild>
 						<Link href="/products/all">Go to Products </Link>
 					</Button>

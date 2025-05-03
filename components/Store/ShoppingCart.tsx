@@ -1,6 +1,5 @@
 "use client";
 
-import redis from "@/app/lib/redis";
 import type { Cart } from "@/app/lib/types";
 import { Loader2, ShoppingBag, ShoppingBagIcon } from "lucide-react";
 import Link from "next/link";
@@ -14,20 +13,29 @@ import {
 	SheetTrigger,
 } from "../ui/sheet";
 import Image from "next/image";
-import DeletingButton from "../DeletingButton";
 import { checkOut } from "@/app/actions/actions";
-import SubmitButton from "../SubmitButton";
 import { Card } from "../ui/card";
 import useCartStore from "@/stores/useCartStore";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-nextjs";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Cart = () => {
 	const { user } = useKindeAuth();
 	const { cart, removeItem } = useCartStore();
+	const router = useRouter();
+
+	const handleCheckout = async () => {
+		setChecking(true);
+		const url = await checkOut(cart);
+		router.push(url || "/");
+		setChecking(false);
+	};
+
 	let total = 0;
 	let totalPrice = 0;
 	const [pending, setPending] = useState(false);
+	const [checking, setChecking] = useState(false);
 	const deleteItem = (productId: string) => {
 		setPending(true);
 		removeItem(productId);
@@ -116,13 +124,15 @@ const Cart = () => {
 								))}
 								<div className="mt-10 justify-between flex ">
 									<p className="text-xl font-bold">Total : {totalPrice}</p>
-									<form
-										action={() => {
-											checkOut(cart);
-										}}
-									>
-										<SubmitButton text="Check Out"></SubmitButton>
-									</form>
+
+									{checking ? (
+										<Button disabled>
+											<Loader2 className="animate-spin w-5 h-5"></Loader2>
+											loading
+										</Button>
+									) : (
+										<Button onClick={handleCheckout}>Check out</Button>
+									)}
 								</div>
 							</div>
 						)}

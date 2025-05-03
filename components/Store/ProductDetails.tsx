@@ -23,8 +23,10 @@ const ProductDetails = async ({ id }: { id: string }) => {
 				<span className="block text-gray-500 ">description :</span>
 				<p className="text-gray-500 leading-7">{product.description}</p>
 				<div className="flex justify-between mt-4">
-					<ShoppingButton cartItem={cartItem}></ShoppingButton>
-					<Button className="" asChild>
+					<div>
+						<ShoppingButton cartItem={cartItem}></ShoppingButton>
+					</div>
+					<Button asChild>
 						<Link href="/products/all">Go to Products </Link>
 					</Button>
 				</div>

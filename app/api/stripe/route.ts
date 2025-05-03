@@ -1,5 +1,4 @@
 import { prisma } from "@/app/lib/db";
-import redis from "@/app/lib/redis";
 import { stripe } from "@/app/lib/stripe";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";

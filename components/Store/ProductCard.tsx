@@ -13,7 +13,6 @@ import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import ShoppingButton from "../ShoppingButton";
-import { addItem } from "@/app/actions/actions";
 type item = {
 	id: string;
 	name: string;

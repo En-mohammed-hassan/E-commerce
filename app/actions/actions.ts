@@ -138,8 +138,8 @@ export async function checkOut(cart: Cart) {
 			const session = await stripe.checkout.sessions.create({
 				line_items: lineItems,
 				mode: "payment",
-				cancel_url: process.env.KINDE_SITE_URL + "payment" + "/cancel",
-				success_url: process.env.KINDE_SITE_URL + "payment" + "/success",
+				cancel_url: process.env.KINDE_SITE_URL + "/payment/cancel",
+				success_url: process.env.KINDE_SITE_URL + "/payment/success",
 				metadata: {
 					userId: user.id,
 				},

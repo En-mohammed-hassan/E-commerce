@@ -16,7 +16,7 @@ import {
 	SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, LinkIcon } from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -127,16 +127,16 @@ export default async function StoreLayout({
 						</header>
 						<main className="my-5">{children}</main>
 					</div>
-					<footer className="m-10 px-4 text-center text-gray-500">
-						<small className="mb-2 block text-xs">
-							&copy; 2025 Mhd Hassan. All rights reserved.
-						</small>
-						<p className="text-xs">
-							<span className="font-semibold">About this website:</span> built
-							with React & Next.js (App Router & Server Actions), TypeScript,
-							Tailwind CSS, Chadcn, Redis & Upstash, Prisma, uploadthing, Vercel
-							hosting.
-						</p>
+
+					<footer className="  py-1 text-center text-sm">
+						<p>© {new Date().getFullYear()} All rights reserved </p>
+						<div className=" flex justify-center items-center gap-2">
+							<p className="font-semibold"> Designed By</p>
+							<LinkIcon></LinkIcon>
+							<a target="_blank" href="https://www.mhd-hasan.site/">
+								<p className="font-semibold"> En Mhd Hassan </p>
+							</a>
+						</div>
 					</footer>
 				</body>
 			</html>
